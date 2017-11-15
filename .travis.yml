@@ -1,0 +1,23 @@
+language: go
+sudo: required
+go:
+- 1.8.x
+- 1.9.2
+
+install:
+- curl -o mmake https://github.com/tj/mmake/releases/download/v1.2.0/mmake_linux_amd64
+
+script:
+- ./mmake update
+- TAG=$TRAVIS_COMMIT ./mmake all
+
+deploy:
+  provider: releases
+  file_glob: true
+  file: ./bin/*
+  skip_cleanup: true
+  overwrite: true
+  on:
+    repo: codekoala/aws-roll
+    tags: true
+    condition: $TRAVIS_GO_VERSION =~ ^1\.9(\.[0-9]+)?$
