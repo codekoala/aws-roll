@@ -5,7 +5,7 @@ go:
 - 1.9.2
 
 install:
-- curl -o mmake https://github.com/tj/mmake/releases/download/v1.2.0/mmake_linux_amd64
+- curl -Lo mmake https://github.com/tj/mmake/releases/download/v1.2.0/mmake_linux_amd64
 - chmod 755 ./mmake
 
 script:
