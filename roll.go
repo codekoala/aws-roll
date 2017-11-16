@@ -1,6 +1,7 @@
 package roll
 
 import (
+	"os"
 	"os/exec"
 	"time"
 
@@ -48,9 +49,13 @@ func Roll(command string) (err error) {
 
 	Log.Info("running command", zap.Any("command", command))
 	cmd := exec.Command("bash", "-c", command)
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
 	Log.Debug("command", zap.Any("cmd", cmd))
-	if out, err := cmd.CombinedOutput(); err != nil {
-		Log.Warn("failed to run command", zap.String("output", string(out)), zap.Error(err))
+	if err := cmd.Run(); err != nil {
+		Log.Warn("failed to run command", zap.Error(err))
 	}
 
 	withAllELBs(elbs.RegisterInstance, instanceId, loadBalancers...)

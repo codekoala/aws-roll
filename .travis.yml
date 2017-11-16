@@ -9,8 +9,8 @@ install:
 - chmod 755 ./mmake
 
 script:
-- ./mmake update
-- TAG=$TRAVIS_COMMIT ./mmake all
+- ./mmake update -I ./include
+- TAG=$TRAVIS_COMMIT ./mmake -I ./include all
 
 deploy:
   provider: releases
