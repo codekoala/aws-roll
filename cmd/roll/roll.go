@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/codekoala/aws-roll"
 	"github.com/codekoala/aws-roll/version"
@@ -43,5 +44,5 @@ Options:
 }
 
 func main() {
-	roll.Roll(flag.Arg(0))
+	roll.Roll(strings.Join(flag.Args(), " "))
 }

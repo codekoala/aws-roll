@@ -7,7 +7,7 @@ import (
 
 var (
 	App       = "aws-roll"
-	Version   = "v0.1.0"
+	Version   = "v0.1.1"
 	Commit    = "dev"
 	BuildDate = "unknown"
 )
