@@ -110,8 +110,9 @@ func (this *ELB) RegisterInstance(instanceId, loadBalancer string) (registered b
 	return registered
 }
 
-// IsHealthy checks to see if the specified instances is in service for the specified load balancer
-func (this *ELB) IsHealthy(instanceId, loadBalancer string) (healthy bool) {
+// GetInstanceState gets the current state of the specified instance for the specified load balancer
+func (this *ELB) GetInstanceState(instanceId, loadBalancer string) (state string) {
+	state = "Gone"
 	log := Log.With(zap.String("elb", loadBalancer))
 
 	input := &elb.DescribeInstanceHealthInput{
@@ -121,20 +122,43 @@ func (this *ELB) IsHealthy(instanceId, loadBalancer string) (healthy bool) {
 		}},
 	}
 
-	log.Info("checking instance health")
+	log.Info("checking instance state")
 	out, err := this.svc.DescribeInstanceHealth(input)
 	if err != nil {
-		log.Warn("error checking instance health", zap.Error(err))
+		log.Warn("error checking instance state", zap.Error(err))
 		return
 	}
 
-	for _, state := range out.InstanceStates {
-		if *state.InstanceId != instanceId {
+	for _, st := range out.InstanceStates {
+		if *st.InstanceId != instanceId {
 			continue
 		}
 
-		healthy = *state.State == "InService"
+		state = *st.State
+		break
 	}
 
-	return healthy
+	return
+}
+
+// IsHealthy checks to see if the specified instance is in service for the specified load balancer
+func (this *ELB) IsHealthy(instanceId, loadBalancer string) bool {
+	return this.HasState(instanceId, loadBalancer, "InService")
+}
+
+// IsOutOfService checks to see if the specified instance is out of service for the specified load balancer
+func (this *ELB) IsOutOfService(instanceId, loadBalancer string) bool {
+	return this.HasState(instanceId, loadBalancer, "OutOfService", "Gone")
+}
+
+// HasState checks to see if the specified instance has the specified state for the specified load balancer
+func (this *ELB) HasState(instanceId, loadBalancer string, states ...string) bool {
+	state := this.GetInstanceState(instanceId, loadBalancer)
+	for _, expected := range states {
+		if state == expected {
+			return true
+		}
+	}
+
+	return false
 }

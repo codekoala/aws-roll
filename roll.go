@@ -47,6 +47,15 @@ func Roll(command string) (err error) {
 	Log.Info("found instance load balancers", zap.Any("elbs", loadBalancers))
 	withAllELBs(elbs.DeregisterInstance, instanceId, loadBalancers...)
 
+	Log.Info("waiting for instance to be out of service")
+	for {
+		if withAllELBs(elbs.IsOutOfService, instanceId, loadBalancers...) {
+			break
+		}
+
+		time.Sleep(time.Second * 5)
+	}
+
 	Log.Info("running command", zap.Any("command", command))
 	cmd := exec.Command("bash", "-c", command)
 	cmd.Stdin = os.Stdin
