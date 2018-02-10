@@ -6,6 +6,7 @@ go:
 install:
 - curl -Lo mmake https://github.com/codekoala/mmake/releases/download/v1.3.0/mmake_linux_amd64
 - chmod 755 ./mmake
+- go get -u github.com/golang/dep/cmd/dep
 
 script:
 - ./mmake update -I ./include
