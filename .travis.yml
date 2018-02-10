@@ -1,11 +1,10 @@
 language: go
 sudo: required
 go:
-- 1.8.x
-- 1.9.2
+- 1.9.4
 
 install:
-- curl -Lo mmake https://github.com/tj/mmake/releases/download/v1.2.0/mmake_linux_amd64
+- curl -Lo mmake https://github.com/codekoala/mmake/releases/download/v1.3.0/mmake_linux_amd64
 - chmod 755 ./mmake
 
 script:
