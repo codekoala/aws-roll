@@ -9,6 +9,7 @@ install:
 
 script:
 - ./mmake update -I ./include
+- dep ensure
 - TAG=$TRAVIS_COMMIT ./mmake -I ./include all
 
 deploy:
